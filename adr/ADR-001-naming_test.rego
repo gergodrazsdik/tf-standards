@@ -45,3 +45,8 @@ test_delete_is_ignored if {
 		"change": {"actions": ["delete"], "after": null},
 	}]}
 }
+
+test_reports_the_attribute if {
+	some result in deny with input as change("azurerm_resource_group", "wrong", "create")
+	result.details.attribute == "name"
+}

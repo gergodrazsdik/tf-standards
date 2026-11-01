@@ -43,3 +43,8 @@ test_other_type_is_ignored if {
 		"change": {"actions": ["create"], "after": {}},
 	}]}
 }
+
+test_reports_the_attribute if {
+	some result in deny with input as plan(object.remove(good, ["min_tls_version"]))
+	result.details.attribute == "min_tls_version"
+}

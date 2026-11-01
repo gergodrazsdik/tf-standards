@@ -18,7 +18,7 @@ deny contains result if {
 	not compliant(rc.change.after, attribute, value)
 	result := {
 		"msg": sprintf("POL-001: %s: %s must be %v", [rc.address, attribute, value]),
-		"details": {"doc_id": "POL-001", "address": rc.address, "severity": "high"},
+		"details": {"doc_id": "POL-001", "address": rc.address, "severity": "high", "attribute": attribute},
 	}
 }
 

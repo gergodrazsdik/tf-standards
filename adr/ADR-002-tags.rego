@@ -27,6 +27,6 @@ deny contains result if {
 	not present(rc, tag)
 	result := {
 		"msg": sprintf("ADR-002: %s: required tag %q is missing or empty", [rc.address, tag]),
-		"details": {"doc_id": "ADR-002", "address": rc.address, "severity": "medium"},
+		"details": {"doc_id": "ADR-002", "address": rc.address, "severity": "medium", "attribute": "tags"},
 	}
 }
