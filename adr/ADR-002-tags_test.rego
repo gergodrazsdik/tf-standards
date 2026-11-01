@@ -46,3 +46,8 @@ test_delete_is_ignored if {
 		"change": {"actions": ["delete"], "after": null, "after_unknown": {}},
 	}]}
 }
+
+test_reports_the_attribute if {
+	some result in deny with input as plan({"tags": null}, {})
+	result.details.attribute == "tags"
+}

@@ -19,6 +19,6 @@ deny contains result if {
 	not regex.match(pattern, name)
 	result := {
 		"msg": sprintf("ADR-001: %s: name %q does not match %s", [rc.address, name, pattern]),
-		"details": {"doc_id": "ADR-001", "address": rc.address, "severity": "low"},
+		"details": {"doc_id": "ADR-001", "address": rc.address, "severity": "low", "attribute": "name"},
 	}
 }
