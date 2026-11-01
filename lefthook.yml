@@ -1,0 +1,29 @@
+---
+pre-commit:
+  parallel: true
+  commands:
+    opa-fmt:
+      glob: "*.rego"
+      run: opa fmt --fail --list {staged_files}
+    yamllint:
+      glob: "*.{yml,yaml}"
+      run: yamllint --strict {staged_files}
+    actionlint:
+      glob: ".github/workflows/*"
+      run: actionlint
+    pinact:
+      glob: ".github/workflows/*"
+      run: pinact run --check
+    shellcheck:
+      glob: "*.sh"
+      run: shellcheck {staged_files}
+    ruff:
+      glob: "*.py"
+      run: ruff check {staged_files}
+    gitleaks:
+      run: gitleaks git --pre-commit --staged --no-banner
+
+pre-push:
+  commands:
+    policy-test:
+      run: just policy-test
