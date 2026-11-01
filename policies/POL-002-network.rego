@@ -11,7 +11,7 @@ deny contains result if {
 	rc.type == "azurerm_network_security_rule"
 	judged(rc)
 	open_admin_port(rc.change.after)
-	result := violation(rc, "source_address_prefix")
+	result := finding(rc, "source_address_prefix")
 }
 
 deny contains result if {
@@ -20,7 +20,7 @@ deny contains result if {
 	judged(rc)
 	some rule in rc.change.after.security_rule
 	open_admin_port(rule)
-	result := violation(rc, "security_rule")
+	result := finding(rc, "security_rule")
 }
 
 judged(rc) if {
@@ -29,7 +29,7 @@ judged(rc) if {
 	action in {"create", "update"}
 }
 
-violation(rc, attribute) := {
+finding(rc, attribute) := {
 	"msg": sprintf("POL-002: %s: an inbound rule allows an admin port from the internet", [rc.address]),
 	"details": {"doc_id": "POL-002", "address": rc.address, "severity": "high", "attribute": attribute},
 }
