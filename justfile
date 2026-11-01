@@ -23,12 +23,13 @@ lint: policy-test
     ruff check scripts
     gitleaks git --no-banner
 
-# Format check, unit tests and frontmatter check for the corpus
+# Format check, unit tests, a real policy run and frontmatter check for the corpus
 [group('dev')]
 policy-test:
     opa fmt --fail --list adr policies
     opa check --strict adr policies
     conftest verify --policy adr --policy policies
+    conftest test --no-color --all-namespaces --parser json --policy adr --policy policies tests/empty-plan.json
     uv run scripts/check_frontmatter.py
 
 # Copy the frontmatter contract from a tf-review checkout next to this repo
