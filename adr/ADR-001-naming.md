@@ -7,6 +7,7 @@ applies_to:
   - azurerm_storage_account
   - azurerm_virtual_network
   - azurerm_user_assigned_identity
+topics: [naming]
 severity: low
 rego: ADR-001-naming.rego
 ---
