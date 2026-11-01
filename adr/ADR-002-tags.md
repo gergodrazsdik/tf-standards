@@ -3,6 +3,7 @@ id: ADR-002
 type: adr
 status: accepted
 applies_to: ["*"]
+topics: [tagging]
 severity: medium
 rego: ADR-002-tags.rego
 ---

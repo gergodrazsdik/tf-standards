@@ -4,6 +4,7 @@ type: policy
 status: accepted
 applies_to:
   - azurerm_storage_account
+topics: [security]
 severity: high
 rego: POL-001-storage.rego
 ---
