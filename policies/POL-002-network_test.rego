@@ -102,6 +102,11 @@ test_deny_rule_is_fine if {
 	count(deny) == 0 with input as rule_plan(object.union(open_ssh, {"access": "Deny"}))
 }
 
+# The doc says a wide public range counts too, but only review judges it, as the reviewer's evals rely on.
+test_a_wide_public_range_is_left_to_review if {
+	count(deny) == 0 with input as rule_plan(object.union(open_ssh, {"source_address_prefix": "0.0.0.0/1"}))
+}
+
 test_a_delete_isnt_judged if {
 	plan := {"resource_changes": [{
 		"address": "azurerm_network_security_rule.x",

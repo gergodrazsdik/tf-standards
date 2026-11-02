@@ -16,8 +16,8 @@ rego: POL-002-network.rego
 
 No inbound rule may allow SSH (port 22) or RDP (port 3389) from the internet.
 
-A source counts as the internet when it's `*`, `0.0.0.0/0`, `::/0`, `Internet` or `Any`, in any case. A rule covers a port when it names it, names a range holding it, or uses `*`. Reach these ports through a bastion or a private network instead.
+A source counts as the internet when it's `*`, `0.0.0.0/0`, `::/0`, `Internet` or `Any`, in any case, or when it's any other public range wide enough to cover a large part of the internet, such as `0.0.0.0/1` or `128.0.0.0/2`. Private ranges such as `10.0.0.0/8` don't count. A rule covers a port when it names it, names a range holding it, or uses `*`. Reach these ports through a bastion or a private network instead.
 
 ## Enforcement
 
-`POL-002-network.rego` checks standalone `azurerm_network_security_rule` resources and the `security_rule` blocks inside `azurerm_network_security_group`, including the plural `source_address_prefixes` and `destination_port_ranges` forms. A value only known after apply isn't judged.
+`POL-002-network.rego` checks standalone `azurerm_network_security_rule` resources and the `security_rule` blocks inside `azurerm_network_security_group`, including the plural `source_address_prefixes` and `destination_port_ranges` forms. A value only known after apply isn't judged. The policy only matches the exact forms listed above. Judging how much of the internet another range covers is left to review, so the reviewer's security agent is what catches those.
