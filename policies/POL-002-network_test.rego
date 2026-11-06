@@ -19,6 +19,7 @@ group_plan(rules) := {"resource_changes": [{
 open_ssh := {
 	"direction": "Inbound",
 	"access": "Allow",
+	"protocol": "Tcp",
 	"source_address_prefix": "0.0.0.0/0",
 	"destination_port_range": "22",
 }
@@ -57,6 +58,7 @@ test_plural_ports if {
 	rule := {
 		"direction": "Inbound",
 		"access": "Allow",
+		"protocol": "Tcp",
 		"source_address_prefix": "*",
 		"destination_port_ranges": ["443", "22"],
 	}
@@ -67,6 +69,7 @@ test_plural_sources if {
 	rule := {
 		"direction": "Inbound",
 		"access": "Allow",
+		"protocol": "Tcp",
 		"source_address_prefixes": ["10.0.0.0/8", "0.0.0.0/0"],
 		"destination_port_range": "22",
 	}
@@ -80,6 +83,34 @@ test_inline_rule if {
 
 test_one_finding_for_a_group_with_two_open_rules if {
 	count(deny) == 1 with input as group_plan([open_ssh, object.union(open_ssh, {"destination_port_range": "3389"})])
+}
+
+test_ssh_over_tcp_in_any_case_or_any_protocol if {
+	every protocol in ["Tcp", "tcp", "TCP", "*"] {
+		count(deny) == 1 with input as rule_plan(object.union(open_ssh, {"protocol": protocol}))
+	}
+}
+
+test_rdp_over_udp if {
+	count(deny) == 1 with input as rule_plan(object.union(open_ssh, {"protocol": "Udp", "destination_port_range": "3389"}))
+}
+
+test_udp_on_a_range_holding_both_ports_is_rdp if {
+	count(deny) == 1 with input as rule_plan(object.union(open_ssh, {"protocol": "Udp", "destination_port_range": "*"}))
+}
+
+test_ssh_port_over_udp_is_fine if {
+	every protocol in ["Udp", "UDP", "Icmp"] {
+		count(deny) == 0 with input as rule_plan(object.union(open_ssh, {"protocol": protocol}))
+	}
+}
+
+test_inline_ssh_port_over_udp_is_fine if {
+	count(deny) == 0 with input as group_plan([object.union(open_ssh, {"protocol": "Udp"})])
+}
+
+test_ssh_with_an_unknown_protocol_isnt_judged if {
+	count(deny) == 0 with input as rule_plan(object.remove(open_ssh, ["protocol"]))
 }
 
 test_private_source_is_fine if {

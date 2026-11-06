@@ -40,7 +40,13 @@ open_admin_port(rule) if {
 	from_internet(rule)
 	some port in admin_ports
 	covers_port(rule, port)
+	protocol_reaches(rule, port)
 }
+
+# SSH is TCP only. RDP also runs over UDP 3389, so any protocol counts there.
+protocol_reaches(rule, 22) if lower(rule.protocol) in {"tcp", "*"}
+
+protocol_reaches(_, 3389)
 
 from_internet(rule) if lower(rule.source_address_prefix) in internet_sources
 

@@ -14,9 +14,9 @@ rego: POL-002-network.rego
 
 ## Requirement
 
-No inbound rule may allow SSH (port 22) or RDP (port 3389) from the internet.
+No inbound rule may allow SSH (TCP port 22) or RDP (port 3389, TCP or UDP) from the internet.
 
-A source counts as the internet when it's `*`, `0.0.0.0/0`, `::/0`, `Internet` or `Any`, in any case, or when it's any other public range wide enough to cover a large part of the internet, such as `0.0.0.0/1` or `128.0.0.0/2`. Private ranges such as `10.0.0.0/8` don't count. A rule covers a port when it names it, names a range holding it, or uses `*`. Reach these ports through a bastion or a private network instead.
+A source counts as the internet when it's `*`, `0.0.0.0/0`, `::/0`, `Internet` or `Any`, in any case, or when it's any other public range wide enough to cover a large part of the internet, such as `0.0.0.0/1` or `128.0.0.0/2`. Private ranges such as `10.0.0.0/8` don't count. A rule covers a port when it names it, names a range holding it, or uses `*`. For SSH its protocol must also be `Tcp` or `*`, in any case, since SSH runs over TCP only; RDP counts over any protocol, as it uses UDP 3389 too. Reach these ports through a bastion or a private network instead.
 
 ## Enforcement
 
