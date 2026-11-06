@@ -32,6 +32,42 @@ test_every_listed_type if {
 	}
 }
 
+test_data_stores_inside_a_server_or_account if {
+	every type in [
+		"azurerm_mssql_managed_database",
+		"azurerm_postgresql_flexible_server_database",
+		"azurerm_mysql_flexible_database",
+		"azurerm_cosmosdb_sql_container",
+		"azurerm_storage_container",
+		"azurerm_storage_share",
+		"azurerm_key_vault_secret",
+	] {
+		count(deny) == 1 with input as plan(type, ["delete", "create"])
+	}
+}
+
+test_replacing_a_disk_or_cache if {
+	every type in ["azurerm_managed_disk", "azurerm_redis_cache"] {
+		count(deny) == 1 with input as plan(type, ["delete", "create"])
+	}
+}
+
+test_updating_a_new_type_is_fine if {
+	count(deny) == 0 with input as plan("azurerm_managed_disk", ["update"])
+}
+
+# Settings around a data store hold no data of their own.
+test_replacing_settings_around_a_data_store_is_fine if {
+	every type in [
+		"azurerm_key_vault_access_policy",
+		"azurerm_storage_account_network_rules",
+		"azurerm_mssql_firewall_rule",
+		"azurerm_redis_firewall_rule",
+	] {
+		count(deny) == 0 with input as plan(type, ["delete", "create"])
+	}
+}
+
 test_updating_is_fine if {
 	count(deny) == 0 with input as plan("azurerm_mssql_database", ["update"])
 }
